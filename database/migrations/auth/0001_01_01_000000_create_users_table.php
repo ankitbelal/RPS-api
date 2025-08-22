@@ -15,10 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->unique();
+            $table->char('user_type', 1)->notNullable()->comment('A=Admin, F=Faculty, S=Student');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('device_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->primary(['id', 'email']); // composite primary key
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -2,36 +2,74 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Models\auth\UserLoginActivity;
 use Illuminate\Http\Request;
 use App\Models\Auth\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-     public function login(Request $request)
-    {
-        // Validate required fields
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
 
-        // Find user
-        $user = User::where('email', $validated['email'])->first();
+public function login(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        // Create Sanctum token
-        $token = $user->createToken('API Token')->plainTextToken;
-
+    if ($validator->fails()) {
         return response()->json([
-            'user' => $user,
-            'token' => $token
-        ]);
-    
+            'message' => 'Validation failed',
+            'errors'  => $validator->errors(),
+        ], 422);
+    }
 
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Invalid credentials'], 401);
+    }
+
+    $token = $user->createToken('API Token')->plainTextToken;
+    UserLoginActivity::create([
+        'user_id'    => $user->id,
+        'user_type'  => $request->user_type,
+        'action'    => 'login',
+        'ip_address' => $request->ip(),
+        'platform' => $request->header('User-Agent'),
+    ]);
+
+    return response()->json([
+        'user'  => $user,
+        'token' => $token,
+    ]);
 }
+
+
+public function logout(Request $request)
+{
+       $user = $request->user();
+    if($user){
+        UserLoginActivity::create([
+            'user_id'    => $user->id,
+            'user_type'  => $request->user_type,
+            'action'    => 'logout',
+            'ip_address' => $request->ip(),
+            'platform' => $request->header('User-Agent'),
+        ]);
+            // Revoke the token that was used to authenticate the current request
+    $user->currentAccessToken()->delete();
+
+    return response()->json([
+        'message' => 'User Logged out successfully'
+    ]);
+    }
+
+    return response()->json([
+        'message' => 'No Authenticated user found'
+    ], 401);
+}
+
 }

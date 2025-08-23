@@ -19,7 +19,7 @@ return new class extends Migration
             $table->char('user_type', 1)->notNullable()->comment('A=Admin, F=Faculty, S=Student');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('device_id')->nullable();
+            $table->string('ip_address')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->primary(['id', 'email']); // composite primary key

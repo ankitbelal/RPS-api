@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('user_type',10);
             $table->string('action',50);
             $table->timestamp('act_time')->useCurrent();
-            $table->string('device_id', 100)->nullable();
             $table->string('ip_address', 45)->nullable();
             $table->string('platform', 10)->nullable();
             $table->timestamps();

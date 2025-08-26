@@ -24,8 +24,11 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy environment file (adjust later in Render settings)
 COPY .env.example .env
 
+# Generate Laravel application key
+RUN php artisan key:generate --force
+
 # Expose port
 EXPOSE 8000
 
-# Run Laravel
+# Run Laravel server
 CMD php artisan serve --host=0.0.0.0 --port=$PORT

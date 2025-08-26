@@ -1,4 +1,4 @@
-# Use official PHP 8.4 FPM image
+# Use PHP 8.4 FPM
 FROM php:8.4-fpm
 
 # Install system dependencies
@@ -24,14 +24,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-
-# Copy .env.example to .env
-RUN cp .env.example .env
-
-# Copy project files
+# Copy all project files
 COPY . .
 
-# Install PHP dependencies
+# Copy .env.example to .env
+COPY .env.example .env
+
+# Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Generate application key
@@ -43,5 +42,5 @@ RUN chown -R www-data:www-data /var/www
 # Expose port
 EXPOSE 8000
 
-# Start Laravel development server
+# Start Laravel server
 CMD php artisan serve --host=0.0.0.0 --port=8000

@@ -23,7 +23,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Copy environment file (adjust later in Render settings)
-COPY .env.example .env
+# COPY .env.example .env
 
 # Generate Laravel application key
 RUN php artisan key:generate --force

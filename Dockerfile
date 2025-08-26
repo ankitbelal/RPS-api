@@ -24,6 +24,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
+
+# Copy .env.example to .env
+RUN cp .env.example .env
+
 # Copy project files
 COPY . .
 

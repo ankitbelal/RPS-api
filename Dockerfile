@@ -26,7 +26,7 @@ RUN composer install --no-dev --optimize-autoloader
 # COPY .env.example .env
 
 # Generate Laravel application key
-RUN php artisan key:generate --force
+# RUN php artisan key:generate --force
 
 # Expose port
 EXPOSE 8000

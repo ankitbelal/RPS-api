@@ -4,7 +4,7 @@ namespace App\Http\Controllers\auth;
 
 use App\Models\auth\UserLoginActivity;
 use Illuminate\Http\Request;
-use App\Models\Auth\User;
+use App\Models\auth\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;

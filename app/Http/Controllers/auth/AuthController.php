@@ -75,14 +75,9 @@ public function logout(Request $request)
             // Revoke the token that was used to authenticate the current request
     $user->currentAccessToken()->delete();
 
-    return response()->json([
-        'message' => 'User Logged out successfully'
-    ], 200);
+  return $this->apiResponse->commonResponse("success",'User Logged out successfully', 200);
     }
-
-    return response()->json([
-        'message' => 'No Authenticated user found'
-    ], 401);
+    return $this->apiResponse->commonResponse("error",'No Authenticated user found', 401);
 }
 
 }

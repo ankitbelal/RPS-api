@@ -17,12 +17,10 @@ Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/download-sample', [ProgramController::class, 'downloadSampleProgram']);
         Route::post('/register', [ProgramController::class, 'store']);
         Route::get('/list', [ProgramController::class, 'index']);
-        // Route::get('/{id}', [ProgramController::class, 'show']);
-        // Route::put('/{id}', [ProgramController::class, 'update']);
-        // Route::delete('/{id}', [ProgramController::class, 'destroy']);
+        Route::get('/details', [ProgramController::class, 'show']);
+        Route::put('/update', [ProgramController::class, 'update']);
+        Route::delete('/delete', [ProgramController::class, 'destroy']);
        
-
-
     });
 
 

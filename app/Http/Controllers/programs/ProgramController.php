@@ -35,14 +35,17 @@ class ProgramController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
-        $program = Program::find($id);
-        if ($program) {
-            return response()->json($program);
-        } else {
-            return response()->json(['message' => 'Program not found'], 404);
-        }
+       if(!$request->has('id')){
+        return $this->apiResponse->commonResponse("error","Program id is required",  400);
+       }
+         $program = Program::find($request->id);
+            if ($program) {
+                return $this->apiResponse->successResponse("Program fetched successfully", $program,200);
+            } else {
+                return $this->apiResponse->commonResponse("error","Program not found",  404);
+            }
     }
 
     public function store(ProgramRequest $request)
@@ -57,31 +60,31 @@ class ProgramController extends Controller
         }
     }
 
-    public function update(ProgramRequest $request, $id)
+    public function update(ProgramRequest $request)
     {
-        $program = Program::find($id);
+        $program = Program::find($request->id);
         if ($program) {
             $data = $request->validated();
             $program->update($data);
-            return response()->json($program);
+            return $this->apiResponse->successResponse("Program updated successfully", $program,200);
         } else {
-            return response()->json(['message' => 'Program not found'], 404);
-        }
+          return $this->apiResponse->commonResponse("error","Program not found",  404);    }
     }
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $program = Program::find($id);
+        $program = Program::find($request->id);
         if ($program) {
             $program->delete();
-            return response()->json(['message' => 'Program deleted successfully']);
+            return $this->apiResponse->commonResponse("success","Program deleted successfully", 200);
         } else {
-            return response()->json(['message' => 'Program not found'], 404);
+            return $this->apiResponse->commonResponse("error","Program not found",  404);
         }
     }
 
     // should import the package for excel data map and download sample data
     public function bulkRegisterProgram(Request $request)
     {
+        try{
         $file = $request->file('file');
         $spreadsheet = IOFactory::load($file->getPathname());
         $rows = $spreadsheet->getActiveSheet()->toArray();
@@ -187,8 +190,10 @@ class ProgramController extends Controller
             null,
             201
         );
+    } catch (Exception $e) {
+        return $this->apiResponse->failedResponse("failed to register programs:",  $e->getMessage(), 500);
     }
-
+    }
 
 
     public function downloadSampleProgram(){

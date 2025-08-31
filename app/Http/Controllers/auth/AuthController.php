@@ -8,12 +8,14 @@ use App\Models\auth\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class AuthController extends Controller
 {
 
 public function login(Request $request)
 {
+    try{
     $validator = Validator::make($request->all(), [
         'email' => 'required|email',
         'password' => 'required|string',
@@ -44,8 +46,16 @@ public function login(Request $request)
     return response()->json([
         'user'  => $user,
         'token' => $token,
-    ]);
+    ], 200);
 }
+catch(Exception $e){
+    return response()->json([
+        'message' => 'An error occurred during login',
+        'error' => $e->getMessage()
+    ], 500);
+}
+}
+
 
 
 public function logout(Request $request)
@@ -64,7 +74,7 @@ public function logout(Request $request)
 
     return response()->json([
         'message' => 'User Logged out successfully'
-    ]);
+    ], 200);
     }
 
     return response()->json([

@@ -8,7 +8,7 @@ use App\Http\Controllers\programs\ProgramController;
 
 Route::post('/login', [AuthController::class, 'login'])->name("login");
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout']);
 
     // Program routes
@@ -24,7 +24,7 @@ Route::post('/logout', [AuthController::class, 'logout']);
     });
 
 
-// });
+});
 Route::middleware('auth:sanctum')->get('/debug-user', function (Request $request) {
     return $request->user(); // should return user object
 });

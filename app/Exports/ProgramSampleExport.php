@@ -64,7 +64,7 @@ public function download($fileName = 'program_sample.xlsx')
 
     // 6. Style data rows: light gray background, borders
     $dataStartRow = $headerRow + 1;
-    $dataEndRow = $headerRow + count($sampleData);
+    $dataEndRow = 20;
     $sheet->getStyle('B'.$dataStartRow.':G'.$dataEndRow)->getFill()->setFillType(Fill::FILL_SOLID)
         ->getStartColor()->setARGB('FFE0E0E0'); // light gray
     $sheet->getStyle('B'.$dataStartRow.':G'.$dataEndRow)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);

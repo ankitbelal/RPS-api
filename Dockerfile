@@ -28,8 +28,6 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interactio
 # Copy the rest of the application
 COPY . .
 
-# Generate application key
-RUN php artisan key:generate --force
 
 # Expose Laravel default port
 EXPOSE 8000

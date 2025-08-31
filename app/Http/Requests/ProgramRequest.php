@@ -16,10 +16,17 @@ class ProgramRequest extends FormRequest
 
     public function rules(): array
     {
+         $programId = $this->input('id'); // get ID from payload (if any)
+
         return [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:programs,code',
-            'duration_years' => 'required|integer',
+          'code' => [
+            'required',
+            'string',
+            'max:50',
+            $programId ? "unique:programs,code,{$programId}" : 'unique:programs,code',
+             ],
+             'duration_years' => 'required|integer',
             'total_semesters' => 'required|integer',
             'total_subjects' => 'required|integer',
             'description' => 'nullable|string',

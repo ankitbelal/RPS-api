@@ -13,13 +13,14 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
     // Program routes
       Route::group(['prefix' => 'programs'], function () {
+        Route::post('/bulk-register', [ProgramController::class, 'bulkRegisterProgram']);
+        Route::get('/download-sample', [ProgramController::class, 'downloadSampleProgram']);
+        Route::post('/register', [ProgramController::class, 'store']);
         Route::get('/list', [ProgramController::class, 'index']);
         Route::get('/{id}', [ProgramController::class, 'show']);
-        Route::post('/register', [ProgramController::class, 'store']);
         Route::put('/{id}', [ProgramController::class, 'update']);
         Route::delete('/{id}', [ProgramController::class, 'destroy']);
-        Route::post('/bulk-register', [ProgramController::class, 'bulkRegisterProgram']);
-         Route::get('/download-sample', [ProgramController::class, 'downloadSampleProgram']);
+       
 
 
     });

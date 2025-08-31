@@ -366,7 +366,7 @@
                     </div>
                     
                     <div class="developer">
-                        <img src="{{ asset('devs/aarya.jpg') }}" alt="Arya Singh" class="developer-img">
+                       <img src="{{ asset('devs/aarya.JPG') }}" alt="Aarya Singh" class="developer-img">
                         <div class="developer-name">Aarya Singh</div>
                         <div class="developer-role">Frontend Developer</div>
                         <div class="developer-links">

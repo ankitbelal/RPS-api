@@ -389,7 +389,7 @@
             <div class="card actions">
                 <h2><i class="fas fa-cogs"></i> Quick Actions</h2>
                 <button class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Login to System
+                    <a style="color: #fff;" href="https://ui-rps.vercel.app/"><i class="fas fa-sign-in-alt"></i> Login to System</a>
                 </button>
             </div>
         </div>

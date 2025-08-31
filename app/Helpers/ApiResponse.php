@@ -10,7 +10,6 @@ class ApiResponse
             'success' => true,
             'message' => $message,
             'records' => $data,
-            'errors' => null,
             'statusCode' => $status
         ], $status);
     }
@@ -41,4 +40,21 @@ public static function paginatedData($paginator)
     ];
 }
 
+public function commonResponse($type="success", $message = "Success", $status = 200)
+{
+    if($type=="error"||$type=="failed"){
+   return response()->json([
+        'success' => false,
+        'message' => $message,
+        'statusCode' => $status
+    ], $status);
+    }
+    else{
+   return response()->json([
+        'success' => true,
+        'message' => $message,
+        'statusCode' => $status
+    ], $status);    }
+ 
+}
 }

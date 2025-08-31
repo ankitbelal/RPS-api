@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Helpers\ApiResponse;
 use App\Models\auth\UserLoginActivity;
 use Illuminate\Http\Request;
 use App\Models\auth\User;
@@ -12,6 +13,11 @@ use Exception;
 
 class AuthController extends Controller
 {
+    private $apiResponse;
+
+    public function __construct(ApiResponse $apiResponse) {
+        $this->apiResponse = $apiResponse;
+    }
 
 public function login(Request $request)
 {
@@ -31,7 +37,7 @@ public function login(Request $request)
     $user = User::where('email', $request->email)->first();
 
     if (!$user || !Hash::check($request->password, $user->password)) {
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return $this->apiResponse->commonResponse("error",'Invalid credentials', 401);
     }
 
     $token = $user->createToken('API Token')->plainTextToken;
@@ -43,16 +49,13 @@ public function login(Request $request)
         'platform' => $request->header('User-Agent'),
     ]);
 
-    return response()->json([
+   return $this->apiResponse->successResponse('Login successful', [
         'user'  => $user,
         'token' => $token,
     ], 200);
 }
 catch(Exception $e){
-    return response()->json([
-        'message' => 'An error occurred during login',
-        'error' => $e->getMessage()
-    ], 500);
+    return $this->apiResponse->failedResponse("something went wrong", $e->getMessage(), 500);
 }
 }
 

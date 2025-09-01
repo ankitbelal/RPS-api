@@ -29,6 +29,3 @@ Route::middleware('auth:sanctum')->get('/debug-user', function (Request $request
     return $request->user(); // should return user object
 });
 
-
-
-Teststest

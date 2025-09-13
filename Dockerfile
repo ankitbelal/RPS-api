@@ -1,35 +1,36 @@
-# Use official PHP image with required extensions
-FROM php:8.3-fpm
+# Use PHP 8.4 with FPM
+FROM php:8.4-fpm
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
     libonig-dev \
     libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql
+    libzip-dev \
+    libpng-dev \
+    libicu-dev \
+    && docker-php-ext-install pdo pdo_mysql zip intl gd mbstring
 
-# Install Composer
+# Install Composer globally
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www
 
-# Copy Laravel files
+# Copy composer files first (cache optimization)
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+
+# Copy the rest of the application
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
 
-# Copy environment file (adjust later in Render settings)
-# COPY .env.example .env
-
-# Generate Laravel application key
-# RUN php artisan key:generate --force
-
-# Expose port
+# Expose Laravel default port
 EXPOSE 8000
 
-# Run Laravel server
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# Start Laravel server using Render's $PORT
+CMD php artisan serve --host=0.0.0.0 --port=${PORT:-8000}

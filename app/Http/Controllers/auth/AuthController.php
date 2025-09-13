@@ -2,18 +2,26 @@
 
 namespace App\Http\Controllers\auth;
 
+use App\Helpers\ApiResponse;
 use App\Models\auth\UserLoginActivity;
 use Illuminate\Http\Request;
-use App\Models\Auth\User;
+use App\Models\auth\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class AuthController extends Controller
 {
+    private $apiResponse;
+
+    public function __construct(ApiResponse $apiResponse) {
+        $this->apiResponse = $apiResponse;
+    }
 
 public function login(Request $request)
 {
+    try{
     $validator = Validator::make($request->all(), [
         'email' => 'required|email',
         'password' => 'required|string',
@@ -29,7 +37,7 @@ public function login(Request $request)
     $user = User::where('email', $request->email)->first();
 
     if (!$user || !Hash::check($request->password, $user->password)) {
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return $this->apiResponse->commonResponse("error",'Invalid credentials', 401);
     }
 
     $token = $user->createToken('API Token')->plainTextToken;
@@ -41,11 +49,16 @@ public function login(Request $request)
         'platform' => $request->header('User-Agent'),
     ]);
 
-    return response()->json([
+   return $this->apiResponse->successResponse('Login successful', [
         'user'  => $user,
         'token' => $token,
-    ]);
+    ], 200);
 }
+catch(Exception $e){
+    return $this->apiResponse->failedResponse("something went wrong", $e->getMessage(), 500);
+}
+}
+
 
 
 public function logout(Request $request)
@@ -62,14 +75,9 @@ public function logout(Request $request)
             // Revoke the token that was used to authenticate the current request
     $user->currentAccessToken()->delete();
 
-    return response()->json([
-        'message' => 'User Logged out successfully'
-    ]);
+  return $this->apiResponse->commonResponse("success",'User Logged out successfully', 200);
     }
-
-    return response()->json([
-        'message' => 'No Authenticated user found'
-    ], 401);
+    return $this->apiResponse->commonResponse("error",'No Authenticated user found', 401);
 }
 
 }
